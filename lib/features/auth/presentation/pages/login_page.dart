@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ganlink/core/enums/status.dart';
+import 'package:ganlink/features/auth/data/register_service.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_bloc.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_event.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_state.dart';
+import 'package:ganlink/features/auth/presentation/blocs/register_bloc.dart';
 import 'package:ganlink/features/auth/presentation/pages/register_page.dart';
 import 'package:ganlink/features/main/main_page.dart';
 
@@ -99,9 +101,16 @@ class LoginPage extends StatelessWidget {
                   TextButton(
                     onPressed: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                          create: (context) => RegisterBloc(
+                            service: RegisterService(),
+                          ),
+                          child: const RegisterPage(),
+                        ),
+                      ),
                     ),
-                    child: Text("Register"),
+                    child: const Text("Register"),
                   ),
                 ],
               ),

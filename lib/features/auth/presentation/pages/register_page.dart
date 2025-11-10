@@ -1,105 +1,216 @@
 import 'package:flutter/material.dart';
-import 'package:ganlink/features/main/main_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ganlink/core/enums/status.dart';
+import 'package:ganlink/features/auth/presentation/blocs/register_bloc.dart';
+import 'package:ganlink/features/auth/presentation/blocs/register_event.dart';
+import 'package:ganlink/features/auth/presentation/blocs/register_state.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
-  bool _isHiden = true;
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return BlocListener<RegisterBloc, RegisterState>(
+      listenWhen: (previous, current) => previous.status != current.status,
+      listener: (context, state) {
+        switch (state.status) {
+          case Status.success:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  state.message.isEmpty
+                      ? 'Registration successful! Please login.'
+                      : state.message,
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+            // Navegar de vuelta al login
+            Navigator.pop(context);
+            break;
+          case Status.failure:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  state.message.isEmpty ? 'Registration failed' : state.message,
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+            break;
+          default:
+        }
+      },
+      child: Scaffold(
+        body: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                autocorrect: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Username",
-                ),
-              ),
-            ),
-          
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                autocorrect: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "First name",
-                ),
-              ),
-            ),
+            SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 40.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Create Account',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      const SizedBox(height: 32),
+                      
+                      // Username
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          onChanged: (value) => context.read<RegisterBloc>().add(
+                            OnUsernameChanged(username: value),
+                          ),
+                          autocorrect: false,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Username",
+                            hintText: "Enter your username",
+                          ),
+                        ),
+                      ),
 
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                autocorrect: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Last name",
-                ),
-              ),
-            ),
+                      // First Name
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          onChanged: (value) => context.read<RegisterBloc>().add(
+                            OnFirstNameChanged(firstName: value),
+                          ),
+                          autocorrect: false,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "First Name",
+                            hintText: "Enter your first name",
+                          ),
+                        ),
+                      ),
 
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                autocorrect: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Email",
-                ),
-              ),
-            ),
+                      // Last Name
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          onChanged: (value) => context.read<RegisterBloc>().add(
+                            OnLastNameChanged(lastName: value),
+                          ),
+                          autocorrect: false,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Last Name",
+                            hintText: "Enter your last name",
+                          ),
+                        ),
+                      ),
 
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                autocorrect: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Password",
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _isHiden = !_isHiden;
-                      });
-                    },
-                    icon: Icon(
-                      _isHiden ? Icons.visibility_off : Icons.visibility,
-                    ),
+                      // Email
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          onChanged: (value) => context.read<RegisterBloc>().add(
+                            OnEmailChanged(email: value),
+                          ),
+                          autocorrect: false,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Email",
+                            hintText: "Enter your email",
+                          ),
+                        ),
+                      ),
+
+                      // RUC
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          onChanged: (value) => context.read<RegisterBloc>().add(
+                            OnRucChanged(ruc: value),
+                          ),
+                          autocorrect: false,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "RUC",
+                            hintText: "Enter your RUC",
+                          ),
+                        ),
+                      ),
+
+                      // Password
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: BlocSelector<RegisterBloc, RegisterState, bool>(
+                          selector: (state) => state.isPasswordVisible,
+                          builder: (context, isPasswordVisible) => TextField(
+                            onChanged: (value) => context.read<RegisterBloc>().add(
+                              OnPasswordChanged(password: value),
+                            ),
+                            autocorrect: false,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              labelText: "Password",
+                              hintText: "Enter your password",
+                              suffixIcon: IconButton(
+                                onPressed: () => context.read<RegisterBloc>().add(
+                                  const TogglePasswordVisibility(),
+                                ),
+                                icon: Icon(
+                                  !isPasswordVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                              ),
+                            ),
+                            obscureText: !isPasswordVisible,
+                          ),
+                        ),
+                      ),
+
+                      // Register Button
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          height: 48,
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: () => context.read<RegisterBloc>().add(
+                              const Register(),
+                            ),
+                            child: const Text('Register'),
+                          ),
+                        ),
+                      ),
+
+                      // Back to Login
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Already have an account? Login"),
+                      ),
+                    ],
                   ),
                 ),
-                obscureText: _isHiden,
               ),
             ),
 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 48,
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainPage()),
-                  ),
-                  child: Text('Register'),
-                ),
-              ),
+            // Loading Indicator
+            BlocSelector<RegisterBloc, RegisterState, bool>(
+              selector: (state) => state.status == Status.loading,
+              builder: (context, isLoading) {
+                if (isLoading) {
+                  return Container(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .withValues(alpha: 0.5),
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
-
-            TextButton(onPressed: () => Navigator.pop(context), child: Text("Login")),
           ],
         ),
       ),
