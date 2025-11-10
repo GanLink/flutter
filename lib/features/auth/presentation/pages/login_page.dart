@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ganlink/core/enums/status.dart';
-import 'package:ganlink/features/auth/data/register_service.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_bloc.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_event.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_state.dart';
@@ -99,17 +98,22 @@ class LoginPage extends StatelessWidget {
                   ),
                   
                   TextButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                          create: (context) => RegisterBloc(
-                            service: RegisterService(),
+                    onPressed: () {
+                      // Obtener el authRepository del LoginBloc actual
+                      final authRepository = context.read<LoginBloc>().authRepository;
+                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => RegisterBloc(
+                              authRepository: authRepository,
+                            ),
+                            child: const RegisterPage(),
                           ),
-                          child: const RegisterPage(),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                     child: const Text("Register"),
                   ),
                 ],

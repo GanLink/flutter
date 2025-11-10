@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ganlink/core/enums/status.dart';
-import 'package:ganlink/features/auth/data/register_service.dart';
+import 'package:ganlink/features/auth/repositories/auth_repository.dart';
 import 'package:ganlink/features/auth/presentation/blocs/register_event.dart';
 import 'package:ganlink/features/auth/presentation/blocs/register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final RegisterService service;
+  final AuthRepository authRepository;
   
-  RegisterBloc({required this.service}) : super(RegisterState()) {
+  RegisterBloc({required this.authRepository}) : super(RegisterState()) {
     on<OnUsernameChanged>(
       (event, emit) => emit(state.copyWith(username: event.username)),
     );
@@ -46,7 +46,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(state.copyWith(status: Status.loading));
 
     try {
-      final message = await service.register(
+      final message = await authRepository.register(
         username: state.username,
         firstName: state.firstName,
         lastName: state.lastName,
