@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ganlink/core/blocs/auth_bloc.dart';
 import 'package:ganlink/core/blocs/auth_event.dart';
 import 'package:ganlink/core/blocs/auth_state.dart';
+import 'package:ganlink/features/auth/presentation/blocs/login_bloc.dart';
+import 'package:ganlink/features/auth/presentation/blocs/login_event.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -20,6 +22,9 @@ class MainPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
+              // Resetear el estado del LoginBloc antes de hacer logout
+              context.read<LoginBloc>().add(const ResetLogin());
+              
               // Notificar al AuthBloc que el usuario hizo logout
               context.read<AuthBloc>().add(const UserLoggedOut());
               // GoRouter redirigirá automáticamente a /login

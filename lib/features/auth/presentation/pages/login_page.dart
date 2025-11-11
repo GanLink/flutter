@@ -20,7 +20,8 @@ class LoginPage extends StatelessWidget {
       listener: (context, state) {
         switch (state.status) {
           case Status.success:
-            // Notificar al AuthBloc global que el usuario hizo login
+            // Solo notificar si hay un usuario válido
+            // Esto previene re-login accidental con datos antiguos
             if (state.user != null) {
               context.read<AuthBloc>().add(UserLoggedIn(
                 userId: state.user!.id,

@@ -22,7 +22,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
 
     on<Login>(_login);
+    on<ResetLogin>(_resetLogin);
   }
+  
   FutureOr<void> _login(Login event, Emitter<LoginState> emit) async {
     emit(state.copyWith(status: Status.loading));
   
@@ -38,6 +40,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }
+  }
+
+  /// Resetea el estado del LoginBloc al estado inicial
+  /// Se usa cuando el usuario hace logout para limpiar los datos del login anterior
+  FutureOr<void> _resetLogin(ResetLogin event, Emitter<LoginState> emit) async {
+    emit(LoginState()); // Volver al estado inicial limpio
   }
 
   

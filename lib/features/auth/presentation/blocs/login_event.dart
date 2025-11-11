@@ -19,3 +19,7 @@ class TogglePasswordVisibility extends LoginEvent {
 class Login extends LoginEvent {
   const Login();
 }
+
+class ResetLogin extends LoginEvent {
+  const ResetLogin();
+}
