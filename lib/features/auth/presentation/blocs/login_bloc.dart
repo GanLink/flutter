@@ -28,11 +28,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   
     try {
       // El repository guardará automáticamente el token y datos del usuario
-      await authRepository.login(
+      final user = await authRepository.login(
         username: state.username,
         password: state.password,
       );
-      emit(state.copyWith(status: Status.success));
+      
+      // Emitir success con el usuario para que LoginPage pueda notificar al AuthBloc
+      emit(state.copyWith(status: Status.success, user: user));
     } catch (e) {
       emit(state.copyWith(status: Status.failure, message: e.toString()));
     }

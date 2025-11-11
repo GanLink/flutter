@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ganlink/core/blocs/auth_bloc.dart';
+import 'package:ganlink/core/blocs/auth_event.dart';
+import 'package:ganlink/core/blocs/auth_state.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Obtener datos del usuario del AuthBloc
+    final authState = context.watch<AuthBloc>().state;
+    final username = authState is Authenticated ? authState.username : 'Usuario';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('GanLink - Home'),
@@ -12,7 +20,9 @@ class MainPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/login');
+              // Notificar al AuthBloc que el usuario hizo logout
+              context.read<AuthBloc>().add(const UserLoggedOut());
+              // GoRouter redirigirá automáticamente a /login
             },
             tooltip: 'Logout',
           ),
@@ -29,7 +39,7 @@ class MainPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              '¡Bienvenido a GanLink!',
+              '¡Bienvenido $username!',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 16),

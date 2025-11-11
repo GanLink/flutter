@@ -1,13 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ganlink/core/blocs/auth_bloc.dart';
+import 'package:ganlink/core/blocs/auth_event.dart';
 import 'package:ganlink/core/enums/status.dart';
+import 'package:ganlink/core/navigation/app_routes.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_bloc.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_event.dart';
 import 'package:ganlink/features/auth/presentation/blocs/login_state.dart';
-import 'package:ganlink/features/auth/presentation/blocs/register_bloc.dart';
-import 'package:ganlink/features/auth/presentation/pages/register_page.dart';
-import 'package:ganlink/features/main/main_page.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -19,10 +20,15 @@ class LoginPage extends StatelessWidget {
       listener: (context, state) {
         switch (state.status) {
           case Status.success:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MainPage()),
-            );
+            // Notificar al AuthBloc global que el usuario hizo login
+            if (state.user != null) {
+              context.read<AuthBloc>().add(UserLoggedIn(
+                userId: state.user!.id,
+                username: state.user!.username,
+                token: state.user!.token,
+              ));
+              // GoRouter redirigirá automáticamente a /main
+            }
             break;
           case Status.failure:
             ScaffoldMessenger.of(context).showSnackBar(
@@ -136,19 +142,7 @@ class LoginPage extends StatelessWidget {
                         Center(
                           child: TextButton(
                             onPressed: () {
-                              final authRepository = context.read<LoginBloc>().authRepository;
-                              
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BlocProvider(
-                                    create: (context) => RegisterBloc(
-                                      authRepository: authRepository,
-                                    ),
-                                    child: const RegisterPage(),
-                                  ),
-                                ),
-                              );
+                              context.go(AppRoutes.register);
                             },
                             child: RichText(
                               text: TextSpan(

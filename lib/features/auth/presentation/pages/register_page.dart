@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ganlink/core/enums/status.dart';
+import 'package:ganlink/core/navigation/app_routes.dart';
 import 'package:ganlink/features/auth/presentation/blocs/register_bloc.dart';
 import 'package:ganlink/features/auth/presentation/blocs/register_event.dart';
 import 'package:ganlink/features/auth/presentation/blocs/register_state.dart';
@@ -25,8 +27,8 @@ class RegisterPage extends StatelessWidget {
                 backgroundColor: Colors.green,
               ),
             );
-            // Navegar de vuelta al login
-            Navigator.pop(context);
+            // Navegar de vuelta al login usando GoRouter
+            context.go(AppRoutes.login);
             break;
           case Status.failure:
             ScaffoldMessenger.of(context).showSnackBar(
@@ -217,7 +219,7 @@ class RegisterPage extends StatelessWidget {
                         // Back to Login
                         Center(
                           child: TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => context.go(AppRoutes.login),
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
