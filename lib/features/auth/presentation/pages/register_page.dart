@@ -45,22 +45,52 @@ class RegisterPage extends StatelessWidget {
         body: Stack(
           children: [
             SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 40.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Create Account',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 32),
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Logo circular
+                        Center(
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/images/logo.png',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(
+                                    Icons.business,
+                                    size: 50,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 24),
+                        
+                        Text(
+                          'Create Account',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                        
+                        const SizedBox(height: 32),
                       
-                      // Username
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
+                        // Username
+                        TextField(
                           onChanged: (value) => context.read<RegisterBloc>().add(
                             OnUsernameChanged(username: value),
                           ),
@@ -69,14 +99,14 @@ class RegisterPage extends StatelessWidget {
                             border: OutlineInputBorder(),
                             labelText: "Username",
                             hintText: "Enter your username",
+                            prefixIcon: Icon(Icons.person_outline),
                           ),
                         ),
-                      ),
 
-                      // First Name
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
+                        const SizedBox(height: 16),
+
+                        // First Name
+                        TextField(
                           onChanged: (value) => context.read<RegisterBloc>().add(
                             OnFirstNameChanged(firstName: value),
                           ),
@@ -85,14 +115,14 @@ class RegisterPage extends StatelessWidget {
                             border: OutlineInputBorder(),
                             labelText: "First Name",
                             hintText: "Enter your first name",
+                            prefixIcon: Icon(Icons.badge_outlined),
                           ),
                         ),
-                      ),
 
-                      // Last Name
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
+                        const SizedBox(height: 16),
+
+                        // Last Name
+                        TextField(
                           onChanged: (value) => context.read<RegisterBloc>().add(
                             OnLastNameChanged(lastName: value),
                           ),
@@ -101,14 +131,14 @@ class RegisterPage extends StatelessWidget {
                             border: OutlineInputBorder(),
                             labelText: "Last Name",
                             hintText: "Enter your last name",
+                            prefixIcon: Icon(Icons.badge_outlined),
                           ),
                         ),
-                      ),
 
-                      // Email
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
+                        const SizedBox(height: 16),
+
+                        // Email
+                        TextField(
                           onChanged: (value) => context.read<RegisterBloc>().add(
                             OnEmailChanged(email: value),
                           ),
@@ -118,14 +148,14 @@ class RegisterPage extends StatelessWidget {
                             border: OutlineInputBorder(),
                             labelText: "Email",
                             hintText: "Enter your email",
+                            prefixIcon: Icon(Icons.email_outlined),
                           ),
                         ),
-                      ),
 
-                      // RUC
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
+                        const SizedBox(height: 16),
+
+                        // RUC
+                        TextField(
                           onChanged: (value) => context.read<RegisterBloc>().add(
                             OnRucChanged(ruc: value),
                           ),
@@ -135,14 +165,14 @@ class RegisterPage extends StatelessWidget {
                             border: OutlineInputBorder(),
                             labelText: "RUC",
                             hintText: "Enter your RUC",
+                            prefixIcon: Icon(Icons.business_outlined),
                           ),
                         ),
-                      ),
 
-                      // Password
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: BlocSelector<RegisterBloc, RegisterState, bool>(
+                        const SizedBox(height: 16),
+
+                        // Password
+                        BlocSelector<RegisterBloc, RegisterState, bool>(
                           selector: (state) => state.isPasswordVisible,
                           builder: (context, isPasswordVisible) => TextField(
                             onChanged: (value) => context.read<RegisterBloc>().add(
@@ -153,6 +183,7 @@ class RegisterPage extends StatelessWidget {
                               border: const OutlineInputBorder(),
                               labelText: "Password",
                               hintText: "Enter your password",
+                              prefixIcon: const Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
                                 onPressed: () => context.read<RegisterBloc>().add(
                                   const TogglePasswordVisibility(),
@@ -167,14 +198,12 @@ class RegisterPage extends StatelessWidget {
                             obscureText: !isPasswordVisible,
                           ),
                         ),
-                      ),
 
-                      // Register Button
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
+                        const SizedBox(height: 24),
+
+                        // Register Button
+                        SizedBox(
                           height: 48,
-                          width: double.infinity,
                           child: FilledButton(
                             onPressed: () => context.read<RegisterBloc>().add(
                               const Register(),
@@ -182,14 +211,34 @@ class RegisterPage extends StatelessWidget {
                             child: const Text('Register'),
                           ),
                         ),
-                      ),
 
-                      // Back to Login
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("Already have an account? Login"),
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+
+                        // Back to Login
+                        Center(
+                          child: TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                                children: [
+                                  const TextSpan(text: "Already have an account? "),
+                                  TextSpan(
+                                    text: "Login",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
