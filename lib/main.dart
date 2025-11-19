@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/blocs/auth_bloc.dart';
 import 'core/blocs/auth_event.dart';
@@ -51,34 +50,11 @@ class MyApp extends StatelessWidget {
           create: (context) => LoginBloc(authRepository: authRepository),
         ),
       ],
-      child: DynamicColorBuilder(
-        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-          ColorScheme lightColorScheme;
-          ColorScheme darkColorScheme;
-
-          if (lightDynamic != null && darkDynamic != null) {
-            lightColorScheme = lightDynamic.harmonized();
-            darkColorScheme = darkDynamic.harmonized();
-          } else {
-            lightColorScheme = lightTheme.colorScheme;
-            darkColorScheme = darkTheme.colorScheme;
-          }
-
-          return MaterialApp.router(
-            title: 'GanLink',
-            theme: ThemeData(
-              useMaterial3: true,
-              colorScheme: lightColorScheme,
-              textTheme: textTheme,
-            ),
-            darkTheme: ThemeData(
-              useMaterial3: true,
-              colorScheme: darkColorScheme,
-              textTheme: textTheme,
-            ),
-            routerConfig: appRouter.router,
-          );
-        },
+      child: MaterialApp.router(
+        title: 'GanLink',
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        routerConfig: appRouter.router,
       ),
     );
   }
