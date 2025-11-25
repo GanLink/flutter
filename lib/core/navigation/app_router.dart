@@ -10,6 +10,9 @@ import 'package:ganlink/features/auth/presentation/pages/register_page.dart';
 import 'package:ganlink/features/auth/presentation/blocs/register_bloc.dart';
 import 'package:ganlink/features/auth/repositories/auth_repository.dart';
 import 'package:ganlink/features/main/main_page.dart';
+import 'package:ganlink/features/farm/presentation/pages/create_farm_page.dart';
+import 'package:ganlink/features/farm/presentation/pages/farm_detail_page.dart';
+import 'package:ganlink/features/farm/domain/farm.dart';
 import 'package:ganlink/features/main/splash_page.dart';
 
 /// Notifier para que GoRouter escuche cambios en el AuthBloc
@@ -117,6 +120,28 @@ class AppRouter {
         path: AppRoutes.main,
         name: 'main',
         builder: (context, state) => const MainPage(),
+      ),
+
+      // Ruta para crear farm
+      GoRoute(
+        path: AppRoutes.createFarm,
+        name: 'createFarm',
+        builder: (context, state) => const CreateFarmPage(),
+      ),
+
+      // Detalle de farm
+      GoRoute(
+        path: AppRoutes.farmDetail,
+        name: 'farmDetail',
+        builder: (context, state) {
+          final farmExtra = state.extra as Farm?;
+          if (farmExtra == null) {
+            return const Scaffold(
+              body: Center(child: Text('Farm no encontrada')),
+            );
+          }
+          return FarmDetailPage(farm: farmExtra);
+        },
       ),
     ],
 

@@ -8,6 +8,8 @@ class AppRoutes {
   // Main routes
   static const String home = '/';
   static const String main = '/main';
+  static const String createFarm = '/farm/create';
+  static const String farmDetail = '/farm/:id';
   
   // Future routes
   // static const String profile = '/profile';
