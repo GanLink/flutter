@@ -10,6 +10,7 @@ import 'package:ganlink/features/auth/presentation/pages/register_page.dart';
 import 'package:ganlink/features/auth/presentation/blocs/register_bloc.dart';
 import 'package:ganlink/features/auth/repositories/auth_repository.dart';
 import 'package:ganlink/features/main/main_page.dart';
+import 'package:ganlink/features/main/splash_page.dart';
 
 /// Notifier para que GoRouter escuche cambios en el AuthBloc
 class GoRouterRefreshStream extends ChangeNotifier {
@@ -41,7 +42,7 @@ class AppRouter {
   });
 
   late final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.home,
     debugLogDiagnostics: true,
     
     // Escuchar cambios en el AuthBloc para redirigir automáticamente
@@ -53,26 +54,31 @@ class AppRouter {
       // para evitar problemas de timing con el contexto de GoRouter
       final authState = authBloc.state;
       final isAuthenticated = authState is Authenticated;
-      final isAuthLoading = authState is AuthLoading;
+      final isAuthLoading = authState is AuthLoading || authState is AuthInitial;
       
       // Rutas de autenticación
       final isLoginRoute = state.matchedLocation == AppRoutes.login;
       final isRegisterRoute = state.matchedLocation == AppRoutes.register;
       final isAuthRoute = isLoginRoute || isRegisterRoute;
+      final isSplash = state.matchedLocation == AppRoutes.home;
 
-      // Si está cargando, esperar (no redirigir)
+      // Mientras se verifica la sesión, ir/seguir en splash
       if (isAuthLoading) {
+        return isSplash ? null : AppRoutes.home;
+      }
+
+      // Si está autenticado
+      if (isAuthenticated) {
+        if (isAuthRoute || isSplash) {
+          return AppRoutes.main;
+        }
         return null;
       }
 
       // Si NO está autenticado y trata de acceder a rutas protegidas
-      if (!isAuthenticated && !isAuthRoute) {
+      if (!isAuthenticated) {
+        if (isAuthRoute) return null;
         return AppRoutes.login;
-      }
-
-      // Si YA está autenticado y trata de acceder a login/register
-      if (isAuthenticated && isAuthRoute) {
-        return AppRoutes.main;
       }
 
       // No redirigir
@@ -80,6 +86,13 @@ class AppRouter {
     },
 
     routes: [
+      // Splash / carga inicial
+      GoRoute(
+        path: AppRoutes.home,
+        name: 'splash',
+        builder: (context, state) => const SplashPage(),
+      ),
+
       // Ruta de Login
       GoRoute(
         path: AppRoutes.login,
