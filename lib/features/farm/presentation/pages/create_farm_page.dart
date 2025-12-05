@@ -89,12 +89,13 @@ class _CreateFarmPageState extends State<CreateFarmPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Actividad principal: Carne (1: engorde/ceba), Leche (2: ordeño/derivados), Genérica (3: mixta).',
+                        'Actividad principal: Carne (engorde/ceba), Leche (ordeño/derivados), Genérica (mixta).',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 24),
                       TextField(
                         controller: _aliasController,
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                         onChanged: (value) => context
                             .read<FarmFormBloc>()
                             .add(AliasChanged(value)),
@@ -106,6 +107,7 @@ class _CreateFarmPageState extends State<CreateFarmPage> {
                       const SizedBox(height: 16),
                       TextField(
                         controller: _descriptionController,
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                         onChanged: (value) => context
                             .read<FarmFormBloc>()
                             .add(DescriptionChanged(value)),
@@ -129,19 +131,19 @@ class _CreateFarmPageState extends State<CreateFarmPage> {
                               child: DropdownButton<int>(
                                 isExpanded: true,
                                 value: selected,
-                                hint: const Text('Selecciona la actividad'),
-                                items: const [
+                                hint: Text('Selecciona la actividad', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                                items: [
+                                  DropdownMenuItem(
+                                    value: 0,
+                                    child: Text('Carne (engorde/ceba)', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+                                  ),
                                   DropdownMenuItem(
                                     value: 1,
-                                    child: Text('Carne (1: engorde/ceba)'),
+                                    child: Text('Leche (ordeño/derivados)', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
                                   ),
                                   DropdownMenuItem(
                                     value: 2,
-                                    child: Text('Leche (2: ordeño/derivados)'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 3,
-                                    child: Text('Genérica (3: mixta)'),
+                                    child: Text('Genérica (mixta)', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
                                   ),
                                 ],
                                 onChanged: (value) {
@@ -159,6 +161,7 @@ class _CreateFarmPageState extends State<CreateFarmPage> {
                       const SizedBox(height: 16),
                       TextField(
                         controller: _ownerDniController,
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                         keyboardType: TextInputType.number,
                         maxLength: 8,
                         onChanged: (value) => context
@@ -201,8 +204,8 @@ class _CreateFarmPageState extends State<CreateFarmPage> {
                     return Container(
                       color: Theme.of(context)
                           .colorScheme
-                          .surfaceVariant
-                          .withOpacity(0.3),
+                          .surfaceContainerHighest
+                          .withValues(alpha: 0.3),
                       child: const Center(child: CircularProgressIndicator()),
                     );
                   },

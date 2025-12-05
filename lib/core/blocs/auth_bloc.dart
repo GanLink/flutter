@@ -92,6 +92,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     TokenRefreshRequested event,
     Emitter<AuthState> emit,
   ) async {
-    // TODO: Implementar refresh token cuando el backend lo soporte
+    // El backend aún no soporta refresh tokens
+    emit(const AuthError('Token refresh no está implementado aún. El backend debe soportarlo primero.'));
   }
 }

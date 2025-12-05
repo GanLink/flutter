@@ -4,7 +4,7 @@ import 'package:ganlink/features/farm/domain/farm.dart';
 class FarmFormState {
   final String alias;
   final String description;
-  final int? mainActivity; // 1=CARNE, 2=LECHE, 3=GENERICA
+  final int? mainActivity; // 0=CARNE, 1=LECHE, 2=GENERICA
   final String ownerDni;
   final Status status;
   final String message;

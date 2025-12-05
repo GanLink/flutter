@@ -1,4 +1,6 @@
-class Farm {
+import 'package:equatable/equatable.dart';
+
+class Farm extends Equatable {
   final int id;
   final String alias;
   final String mainActivity;
@@ -32,4 +34,28 @@ class Farm {
     );
   }
 
+  factory Farm.fromMap(Map<String, dynamic> map) {
+    return Farm(
+      id: map['id'],
+      alias: map['alias'],
+      mainActivity: map['mainActivity'],
+      ownerDni: map['ownerDni'],
+      userId: map['userId'],
+      description: map['description'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'alias': alias,
+      'mainActivity': mainActivity,
+      'ownerDni': ownerDni,
+      'userId': userId,
+      'description': description,
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, alias, mainActivity, ownerDni, userId, description];
 }

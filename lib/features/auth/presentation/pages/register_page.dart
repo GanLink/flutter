@@ -24,7 +24,7 @@ class RegisterPage extends StatelessWidget {
                       ? 'Registration successful! Please login.'
                       : state.message,
                 ),
-                backgroundColor: Colors.green,
+                backgroundColor: Theme.of(context).colorScheme.primary,
               ),
             );
             // Navegar de vuelta al login usando GoRouter
@@ -36,7 +36,7 @@ class RegisterPage extends StatelessWidget {
                 content: Text(
                   state.message.isEmpty ? 'Registration failed' : state.message,
                 ),
-                backgroundColor: Colors.red,
+                backgroundColor: Theme.of(context).colorScheme.error,
               ),
             );
             break;

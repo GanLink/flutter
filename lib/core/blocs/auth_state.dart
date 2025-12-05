@@ -39,3 +39,13 @@ class Unauthenticated extends AuthState {
 class AuthLoading extends AuthState {
   const AuthLoading();
 }
+
+/// Estado: error en la autenticación
+class AuthError extends AuthState {
+  final String message;
+
+  const AuthError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

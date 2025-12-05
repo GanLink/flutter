@@ -1,5 +1,6 @@
 import 'package:ganlink/core/services/secure_storage_service.dart';
 import 'package:ganlink/features/auth/data/login_service.dart';
+import 'package:ganlink/features/auth/data/logout_service.dart';
 import 'package:ganlink/features/auth/data/register_service.dart';
 import 'package:ganlink/features/auth/domain/user_login.dart';
 
@@ -8,14 +9,17 @@ import 'package:ganlink/features/auth/domain/user_login.dart';
 class AuthRepository {
   final LoginService _loginService;
   final RegisterService _registerService;
+  final LogoutService _logoutService;
   final SecureStorageService _storageService;
 
   AuthRepository({
     required LoginService loginService,
     required RegisterService registerService,
+    required LogoutService logoutService,
     required SecureStorageService storageService,
   })  : _loginService = loginService,
         _registerService = registerService,
+        _logoutService = logoutService,
         _storageService = storageService;
 
   /// Realiza el login del usuario
@@ -70,8 +74,16 @@ class AuthRepository {
   /// Elimina TODOS los datos guardados en storage seguro
   Future<void> logout() async {
     try {
+      // Obtener el token antes de limpiar el storage
+      final token = await _storageService.getToken();
+
+      // Notificar al backend del logout (opcional)
+      if (token != null) {
+        await _logoutService.logout(token);
+      }
+
+      // Limpiar todos los datos del storage
       await _storageService.clearAll();
-      // TODO: Notificar al backend del logout (opcional)
     } catch (e) {
       throw Exception('Error al cerrar sesión: $e');
     }
